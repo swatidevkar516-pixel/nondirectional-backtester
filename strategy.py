@@ -397,7 +397,7 @@ def run_non_directional_backtest(spot_df, inst_df, fetcher, symbol, date_str, ex
                 p_s, p_p, p_h = find_strike_by_delta(spot_curr, 0.10, "PE", step, fetcher, inst_df, symbol, exp_date_str, date_str, curr_time_obj)
                 
                 if c_p and c_p > 35:
-                    for i in range(1, 25):
+                    for i in range(1, 31):
                         adj_s = c_s + (i * step)
                         cp, cdf = get_premium_at_time(fetcher, inst_df, symbol, exp_date_str, curr_time_obj, adj_s, "CE", date_str)
                         if cp and cp <= 35:
@@ -405,7 +405,7 @@ def run_non_directional_backtest(spot_df, inst_df, fetcher, symbol, date_str, ex
                             break
                             
                 if p_p and p_p > 35:
-                    for i in range(1, 25):
+                    for i in range(1, 31):
                         adj_s = p_s - (i * step)
                         pp, pdf = get_premium_at_time(fetcher, inst_df, symbol, exp_date_str, curr_time_obj, adj_s, "PE", date_str)
                         if pp and pp <= 35:
