@@ -137,8 +137,8 @@ def run_non_directional_backtest(spot_df, inst_df, fetcher, symbol, date_str, ex
             ce_candidates = []
             pe_candidates = []
             
-            # Scans up to 15 OTM strikes
-            for i in range(1, 16):
+            # Scans up to 30 OTM strikes
+            for i in range(1, 31):
                 c_strike = atm + (i * step)
                 c_prem, c_df = get_premium_at_time(fetcher, inst_df, symbol, exp_date_str, current_time_obj, c_strike, "CE", date_str)
                 if c_prem and c_prem <= 35: ce_candidates.append({'strike': c_strike, 'prem': c_prem, 'df': c_df})
@@ -149,7 +149,7 @@ def run_non_directional_backtest(spot_df, inst_df, fetcher, symbol, date_str, ex
                     
             if not ce_candidates or not pe_candidates: 
                 if ui_log_callback and current_time_obj.minute % 15 == 0: 
-                    ui_log_callback(f"[{time_str_log}] SCAN: Top 15 OTM premiums > ₹35. Waiting for decay...")
+                    ui_log_callback(f"[{time_str_log}] SCAN: Top 30 OTM premiums > ₹35. Waiting for decay...")
                 return False
                 
             best_pair = None
@@ -193,10 +193,10 @@ def run_non_directional_backtest(spot_df, inst_df, fetcher, symbol, date_str, ex
             h_c_strike = selected_ce['strike'] + (2*step)
             h_c_prem, h_c_hist = get_premium_at_time(fetcher, inst_df, symbol, exp_date_str, current_time_obj, h_c_strike, "CE", date_str)
             
-            for i in range(3, 60):
+            for i in range(3, 80):
                 hc_s = atm + (i * step)
                 hcp, hcd = get_premium_at_time(fetcher, inst_df, symbol, exp_date_str, current_time_obj, hc_s, "CE", date_str)
-                if hcp and hcp <= 2:
+                if hcp and hcp <= 3:
                     h_c_strike, h_c_prem, h_c_hist = hc_s, hcp, hcd
                     break
                     
