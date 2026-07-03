@@ -108,7 +108,7 @@ def run_non_directional_backtest(spot_df, inst_df, fetcher, symbol, date_str, ex
             
             # --- 0 DTE GREEK SAFEGUARD ---
             if c_prem and c_prem > 35:
-                for i in range(1, 25):
+                for i in range(1, 31):
                     adj_strike = c_strike + (i * step)
                     cp, cdf = get_premium_at_time(fetcher, inst_df, symbol, exp_date_str, current_time_obj, adj_strike, "CE", date_str)
                     if cp and cp <= 35:
@@ -116,7 +116,7 @@ def run_non_directional_backtest(spot_df, inst_df, fetcher, symbol, date_str, ex
                         break
                         
             if p_prem and p_prem > 35:
-                for i in range(1, 25):
+                for i in range(1, 31):
                     adj_strike = p_strike - (i * step)
                     pp, pdf = get_premium_at_time(fetcher, inst_df, symbol, exp_date_str, current_time_obj, adj_strike, "PE", date_str)
                     if pp and pp <= 35:
@@ -193,7 +193,7 @@ def run_non_directional_backtest(spot_df, inst_df, fetcher, symbol, date_str, ex
             h_c_strike = selected_ce['strike'] + (2*step)
             h_c_prem, h_c_hist = get_premium_at_time(fetcher, inst_df, symbol, exp_date_str, current_time_obj, h_c_strike, "CE", date_str)
             
-            for i in range(3, 80):
+            for i in range(3, 81):
                 hc_s = atm + (i * step)
                 hcp, hcd = get_premium_at_time(fetcher, inst_df, symbol, exp_date_str, current_time_obj, hc_s, "CE", date_str)
                 if hcp and hcp <= 3:
@@ -205,7 +205,7 @@ def run_non_directional_backtest(spot_df, inst_df, fetcher, symbol, date_str, ex
             h_p_strike = selected_pe['strike'] - (2*step)
             h_p_prem, h_p_hist = get_premium_at_time(fetcher, inst_df, symbol, exp_date_str, current_time_obj, h_p_strike, "PE", date_str)
             
-            for i in range(3, 60):
+            for i in range(3, 81):
                 hp_s = atm - (i * step)
                 hpp, hpd = get_premium_at_time(fetcher, inst_df, symbol, exp_date_str, current_time_obj, hp_s, "PE", date_str)
                 if hpp and hpp <= 2:
