@@ -16,7 +16,17 @@ class UpstoxDataFetcher:
     def get_historical_data(self, instrument_key, interval, from_date, to_date, retries=5):
         """Fetches historical OHLCV data from Upstox API v2 with robust Rate Limit handling."""
         encoded_key = urllib.parse.quote(instrument_key)
-        url = f'https://api.upstox.com/v2/historical-candle/{encoded_key}/{interval}/{to_date}/{from_date}'
+        
+        # 1. Determine if the request includes today's date
+        today_str = datetime.now().strftime('%Y-%m-%d')
+        is_today = (to_date == today_str or from_date == today_str)
+
+        # 2. Route the URL dynamically based on whether it is today or a past date
+        if is_today:
+            # The intraday endpoint does not take from_date and to_date parameters
+            url = f'https://api.upstox.com/v2/historical-candle/intraday/{encoded_key}/{interval}'
+        else:
+            url = f'https://api.upstox.com/v2/historical-candle/{encoded_key}/{interval}/{to_date}/{from_date}'
         
         for attempt in range(retries):
             response = requests.get(url, headers=self.headers)
@@ -25,7 +35,8 @@ class UpstoxDataFetcher:
                 time.sleep(1.5)
                 continue
                 
-            if response.status_code in [400, 404]:
+            # 3. Only try the expired instruments endpoint if it's a historical date
+            if response.status_code in [400, 404] and not is_today:
                 url_expired = f'https://api.upstox.com/v2/expired-instruments/historical-candle/{encoded_key}/{interval}/{to_date}/{from_date}'
                 response = requests.get(url_expired, headers=self.headers)
                 
